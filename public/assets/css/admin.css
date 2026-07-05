@@ -1,0 +1,249 @@
+/* =============================================================
+   Shuvo SMM Panel — admin.css
+   Admin panel overrides and specific styles
+   ============================================================= */
+
+/* ── Admin sidebar accent color ──────────────────────────────── */
+.sidebar .logo-icon {
+  background: linear-gradient(135deg, #FF4D9D, #7C5CFF) !important;
+}
+
+.nav-item.active {
+  color: #FF4D9D;
+}
+
+.nav-item.active .nav-icon { color: #FF4D9D; }
+
+.nav-item.active::before {
+  background: linear-gradient(180deg, #FF4D9D, #7C5CFF) !important;
+}
+
+/* ── Admin topbar ────────────────────────────────────────────── */
+.topbar {
+  border-bottom-color: rgba(255,77,157,0.15);
+}
+
+/* ── Admin page header ──────────────────────────────────────── */
+.admin-header {
+  display:         flex;
+  align-items:     center;
+  justify-content: space-between;
+  margin-bottom:   28px;
+  gap:             16px;
+  flex-wrap:       wrap;
+}
+
+.admin-header .page-title {
+  font-size: 1.5rem;
+}
+
+/* ── Filter bar ─────────────────────────────────────────────── */
+.admin-filter-card {
+  background:    var(--surface);
+  border:        1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding:       16px 20px;
+  margin-bottom: 20px;
+  display:       flex;
+  gap:           12px;
+  flex-wrap:     wrap;
+  align-items:   flex-end;
+}
+
+.admin-filter-card .form-control {
+  padding: 8px 12px;
+  font-size: 0.85rem;
+}
+
+.admin-filter-card select.form-control {
+  width: auto;
+  min-width: 140px;
+}
+
+/* ── Table container ─────────────────────────────────────────── */
+.admin-table-card {
+  background:    rgba(255,255,255,0.03);
+  border:        1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow:      hidden;
+}
+
+.admin-table-card .table th {
+  background: rgba(255,77,157,0.05);
+}
+
+/* ── Badge overrides for admin context ───────────────────────── */
+.badge-open         { background: rgba(0,212,255,0.12); color: #00D4FF; }
+.badge-in_progress  { background: rgba(124,92,255,0.12); color: #7C5CFF; }
+.badge-waiting      { background: rgba(255,214,0,0.12); color: #FFD600; }
+.badge-resolved     { background: rgba(0,230,118,0.12); color: #00E676; }
+.badge-closed       { background: rgba(90,101,128,0.15); color: #5A6580; }
+.badge-draft        { background: rgba(90,101,128,0.15); color: #5A6580; }
+.badge-published    { background: rgba(0,230,118,0.12); color: #00E676; }
+.badge-archived     { background: rgba(255,75,85,0.12);  color: #FF4B55; }
+.badge-superadmin   { background: rgba(255,77,157,0.12); color: #FF4D9D; }
+.badge-admin        { background: rgba(124,92,255,0.12); color: #7C5CFF; }
+.badge-user         { background: rgba(90,101,128,0.15); color: #A8B3CF; }
+.badge-low          { background: rgba(0,230,118,0.1);  color: #00E676; }
+.badge-medium       { background: rgba(0,212,255,0.1);  color: #00D4FF; }
+.badge-high         { background: rgba(255,214,0,0.1);  color: #FFD600; }
+.badge-urgent       { background: rgba(255,75,85,0.12); color: #FF4B55; }
+
+/* ── Deposit proof ───────────────────────────────────────────── */
+.deposit-row-pending { border-left: 3px solid #FFD600; }
+
+/* ── Bulk select checkbox ────────────────────────────────────── */
+.bulk-checkbox {
+  accent-color: #FF4D9D;
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+/* ── Settings form groups ────────────────────────────────────── */
+.settings-section {
+  background:    var(--surface);
+  border:        1px solid var(--border);
+  border-radius: var(--radius-lg);
+  margin-bottom: 24px;
+  overflow:      hidden;
+}
+
+.settings-section-header {
+  padding:       16px 24px;
+  border-bottom: 1px solid var(--border);
+  font-family:   var(--font-heading);
+  font-weight:   700;
+  font-size:     0.95rem;
+  display:       flex;
+  align-items:   center;
+  gap:           10px;
+  background:    rgba(255,77,157,0.04);
+}
+
+.settings-section-body {
+  padding: 24px;
+}
+
+.settings-row {
+  display:         grid;
+  grid-template-columns: 240px 1fr;
+  gap:             20px;
+  align-items:     start;
+  padding:         16px 0;
+  border-bottom:   1px solid var(--border);
+}
+
+.settings-row:last-child { border-bottom: none; }
+
+.settings-label {
+  font-size:   0.88rem;
+  font-weight: 600;
+  padding-top: 10px;
+}
+
+.settings-hint {
+  font-size:  0.78rem;
+  color:      var(--text-muted);
+  margin-top: 4px;
+  font-weight:400;
+}
+
+@media (max-width: 768px) {
+  .settings-row {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+}
+
+/* ── Blog editor ─────────────────────────────────────────────── */
+.blog-editor {
+  background:    var(--surface);
+  border:        1px solid var(--border);
+  border-radius: var(--radius);
+  padding:       16px;
+  min-height:    300px;
+  color:         var(--text);
+  font-family:   var(--font-body);
+  font-size:     0.95rem;
+  line-height:   1.8;
+  outline:       none;
+  resize:        vertical;
+}
+
+/* ── Pagination in admin ─────────────────────────────────────── */
+.admin-pagination {
+  display:         flex;
+  align-items:     center;
+  justify-content: space-between;
+  padding:         14px 20px;
+  border-top:      1px solid var(--border);
+  flex-wrap:       wrap;
+  gap:             10px;
+}
+
+.admin-pagination .page-info {
+  font-size:  0.85rem;
+  color:      var(--text-muted);
+}
+
+/* ── System logs ─────────────────────────────────────────────── */
+.log-level-debug    { color: var(--text-muted); }
+.log-level-info     { color: var(--info); }
+.log-level-warning  { color: var(--warning); }
+.log-level-error    { color: var(--danger); }
+.log-level-critical { color: var(--danger); font-weight: 700; }
+
+.log-row {
+  font-family: 'Courier New', monospace;
+  font-size:   0.82rem;
+  padding:     8px 16px;
+  border-bottom: 1px solid var(--border);
+  display:     grid;
+  grid-template-columns: 160px 80px 120px 1fr;
+  gap:         12px;
+  align-items: start;
+}
+
+.log-row:hover { background: var(--surface-hover); }
+
+@media (max-width: 768px) {
+  .log-row { grid-template-columns: 1fr; }
+}
+
+/* ── Broadcast ───────────────────────────────────────────────── */
+.channel-checkbox-wrap {
+  display:      flex;
+  align-items:  center;
+  gap:          8px;
+  padding:      12px 16px;
+  background:   var(--surface);
+  border:       1px solid var(--border);
+  border-radius:var(--radius);
+  cursor:       pointer;
+  transition:   all var(--transition);
+  font-size:    0.88rem;
+  font-weight:  500;
+}
+
+.channel-checkbox-wrap:has(input:checked) {
+  border-color: var(--primary);
+  background:   var(--primary-light);
+  color:        var(--primary);
+}
+
+.channel-checkbox-wrap input {
+  accent-color: var(--primary);
+}
+
+/* ── Responsive overrides ────────────────────────────────────── */
+@media (max-width: 991px) {
+  .admin-filter-card {
+    flex-direction: column;
+    align-items:    stretch;
+  }
+
+  .admin-filter-card select.form-control {
+    width: 100%;
+  }
+}

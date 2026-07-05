@@ -1,0 +1,435 @@
+/* =============================================================
+   Shuvo SMM Panel — dashboard.css
+   Dashboard & Admin specific styles
+   ============================================================= */
+
+/* ── Add Funds Page ──────────────────────────────────────────── */
+.payment-method-tab {
+  display:       flex;
+  align-items:   center;
+  gap:           10px;
+  padding:       14px 18px;
+  background:    var(--surface);
+  border:        1px solid var(--border);
+  border-radius: var(--radius-lg);
+  cursor:        pointer;
+  transition:    all var(--transition);
+  font-weight:   600;
+  font-size:     0.9rem;
+  color:         var(--text-secondary);
+}
+
+.payment-method-tab:hover {
+  background:    var(--surface-hover);
+  color:         var(--text);
+  border-color:  rgba(124,92,255,0.3);
+}
+
+.payment-method-tab.active {
+  border-color:  var(--primary);
+  background:    var(--primary-light);
+  color:         var(--primary);
+}
+
+.payment-method-tab .method-icon {
+  width:  36px;
+  height: 36px;
+  border-radius: 8px;
+  object-fit: contain;
+}
+
+.payment-panel {
+  display: none;
+}
+
+.wallet-address-box {
+  background:    var(--surface);
+  border:        1px solid var(--border);
+  border-radius: var(--radius);
+  padding:       14px 16px;
+  font-family:   'Courier New', monospace;
+  font-size:     0.85rem;
+  color:         var(--text);
+  word-break:    break-all;
+  position:      relative;
+}
+
+.payment-step {
+  display:     flex;
+  align-items: flex-start;
+  gap:         12px;
+  padding:     10px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.payment-step:last-child { border-bottom: none; }
+
+.step-number {
+  width:           26px;
+  height:          26px;
+  min-width:       26px;
+  border-radius:   50%;
+  background:      var(--primary-light);
+  border:          1px solid rgba(124,92,255,0.3);
+  color:           var(--primary);
+  font-size:       0.78rem;
+  font-weight:     700;
+  display:         flex;
+  align-items:     center;
+  justify-content: center;
+}
+
+/* ── Support Tickets ─────────────────────────────────────────── */
+.ticket-card {
+  background:    var(--surface);
+  border:        1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding:       20px;
+  transition:    all var(--transition);
+  cursor:        pointer;
+}
+
+.ticket-card:hover {
+  border-color:  rgba(124,92,255,0.3);
+  background:    var(--surface-hover);
+  transform:     translateX(4px);
+}
+
+.priority-urgent { border-left: 3px solid var(--danger);  }
+.priority-high   { border-left: 3px solid var(--warning); }
+.priority-medium { border-left: 3px solid var(--primary); }
+.priority-low    { border-left: 3px solid var(--text-muted); }
+
+.ticket-reply {
+  display:       flex;
+  gap:           14px;
+  padding:       16px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.ticket-reply:last-child { border-bottom: none; }
+
+.reply-avatar {
+  width:     40px;
+  height:    40px;
+  min-width: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--border);
+}
+
+.reply-bubble {
+  flex:          1;
+  background:    var(--surface);
+  border:        1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding:       14px 16px;
+}
+
+.reply-bubble.admin-reply {
+  background:   var(--primary-light);
+  border-color: rgba(124,92,255,0.2);
+}
+
+.reply-meta {
+  display:       flex;
+  align-items:   center;
+  gap:           8px;
+  margin-bottom: 8px;
+  font-size:     0.82rem;
+  color:         var(--text-muted);
+}
+
+.reply-meta .reply-name {
+  font-weight:  600;
+  color:        var(--text);
+  font-size:    0.88rem;
+}
+
+.reply-body {
+  color:       var(--text-secondary);
+  font-size:   0.9rem;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  word-break:  break-word;
+}
+
+/* ── API Page ─────────────────────────────────────────────────── */
+.api-key-box {
+  display:       flex;
+  align-items:   center;
+  gap:           10px;
+  background:    var(--surface);
+  border:        1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding:       16px 20px;
+}
+
+.api-key-value {
+  flex:          1;
+  font-family:   'Courier New', monospace;
+  font-size:     0.9rem;
+  letter-spacing: 0.05em;
+  color:         var(--text);
+  overflow:      hidden;
+  text-overflow: ellipsis;
+  white-space:   nowrap;
+}
+
+.code-block {
+  background:    #0D0F1A;
+  border:        1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding:       20px;
+  font-family:   'Courier New', monospace;
+  font-size:     0.83rem;
+  line-height:   1.7;
+  overflow-x:    auto;
+  color:         #A8B3CF;
+  position:      relative;
+}
+
+.code-block .code-lang {
+  position:     absolute;
+  top:          10px;
+  right:        12px;
+  font-size:    0.7rem;
+  font-weight:  700;
+  color:        var(--primary);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-family:  var(--font-body);
+}
+
+.code-kw  { color: #7C5CFF; }
+.code-str { color: #00E676; }
+.code-cmt { color: #5A6580; font-style: italic; }
+.code-var { color: #FF4D9D; }
+.code-fn  { color: #00D4FF; }
+
+/* ── Settings Tabs ───────────────────────────────────────────── */
+.settings-tab-list {
+  display:        flex;
+  gap:            6px;
+  border-bottom:  1px solid var(--border);
+  margin-bottom:  24px;
+  overflow-x:     auto;
+  padding-bottom: 1px;
+}
+
+.settings-tab {
+  padding:        10px 20px;
+  border-bottom:  2px solid transparent;
+  font-size:      0.88rem;
+  font-weight:    600;
+  color:          var(--text-muted);
+  cursor:         pointer;
+  white-space:    nowrap;
+  transition:     all var(--transition);
+}
+
+.settings-tab:hover { color: var(--text); }
+
+.settings-tab.active {
+  color:        var(--primary);
+  border-color: var(--primary);
+}
+
+/* ── Referral ─────────────────────────────────────────────────── */
+.referral-link-box {
+  display:       flex;
+  align-items:   center;
+  gap:           10px;
+  background:    var(--primary-light);
+  border:        1px solid rgba(124,92,255,0.3);
+  border-radius: var(--radius-full);
+  padding:       12px 20px;
+  font-size:     0.9rem;
+  font-weight:   600;
+}
+
+.referral-link-text {
+  flex:        1;
+  overflow:    hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color:       var(--primary);
+}
+
+/* ── Admin: KPI Cards ────────────────────────────────────────── */
+.kpi-card {
+  background:    var(--surface);
+  border:        1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding:       22px;
+  display:       flex;
+  align-items:   center;
+  gap:           16px;
+  transition:    all var(--transition);
+}
+
+.kpi-card:hover {
+  border-color:  rgba(124,92,255,0.2);
+  transform:     translateY(-3px);
+  box-shadow:    var(--shadow-md);
+}
+
+.kpi-icon {
+  width:           52px;
+  height:          52px;
+  border-radius:   var(--radius-lg);
+  display:         flex;
+  align-items:     center;
+  justify-content: center;
+  font-size:       1.4rem;
+  flex-shrink:     0;
+}
+
+.kpi-value {
+  font-size:    1.8rem;
+  font-weight:  800;
+  font-family:  var(--font-heading);
+  letter-spacing: -0.03em;
+  line-height:  1;
+}
+
+.kpi-label {
+  font-size:  0.78rem;
+  color:      var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-top: 4px;
+}
+
+.kpi-sub {
+  font-size:  0.8rem;
+  color:      var(--text-muted);
+  margin-top: 6px;
+  display:    flex;
+  align-items: center;
+  gap:        4px;
+}
+
+/* ── Admin: Data Table actions ───────────────────────────────── */
+.table-actions {
+  display:     flex;
+  gap:         6px;
+  flex-wrap:   wrap;
+}
+
+.action-btn {
+  width:           30px;
+  height:          30px;
+  border-radius:   8px;
+  display:         flex;
+  align-items:     center;
+  justify-content: center;
+  font-size:       0.82rem;
+  cursor:          pointer;
+  transition:      all var(--transition);
+  border:          1px solid var(--border);
+  background:      var(--surface);
+  color:           var(--text-muted);
+}
+
+.action-btn:hover { background: var(--surface-hover); color: var(--text); }
+.action-btn.view:hover  { border-color: var(--info);    color: var(--info);    background: var(--info-bg); }
+.action-btn.edit:hover  { border-color: var(--primary); color: var(--primary); background: var(--primary-light); }
+.action-btn.ban:hover   { border-color: var(--danger);  color: var(--danger);  background: var(--danger-bg); }
+.action-btn.check:hover { border-color: var(--success); color: var(--success); background: var(--success-bg); }
+
+/* ── Admin: Filter Bar ───────────────────────────────────────── */
+.filter-bar {
+  display:       flex;
+  gap:           10px;
+  flex-wrap:     wrap;
+  align-items:   center;
+  padding:       16px 20px;
+  border-bottom: 1px solid var(--border);
+  background:    var(--surface);
+}
+
+.filter-bar .form-control {
+  max-width:     200px;
+  padding:       8px 12px;
+  font-size:     0.85rem;
+}
+
+/* ── Admin: Proof Image Modal ────────────────────────────────── */
+.proof-thumb {
+  width:         80px;
+  height:        60px;
+  object-fit:    cover;
+  border-radius: 8px;
+  cursor:        pointer;
+  border:        1px solid var(--border);
+  transition:    all var(--transition);
+}
+
+.proof-thumb:hover {
+  transform:    scale(1.05);
+  border-color: var(--primary);
+}
+
+/* ── OTP Verify Page ────────────────────────────────────────── */
+.otp-inputs {
+  display:         flex;
+  gap:             10px;
+  justify-content: center;
+  margin:          24px 0;
+}
+
+.otp-input {
+  width:          56px;
+  height:         64px;
+  text-align:     center;
+  font-size:      1.8rem;
+  font-weight:    700;
+  font-family:    var(--font-heading);
+  background:     var(--surface);
+  border:         2px solid var(--border);
+  border-radius:  var(--radius-lg);
+  color:          var(--text);
+  transition:     all var(--transition);
+  outline:        none;
+  caret-color:    transparent;
+}
+
+.otp-input:focus {
+  border-color:  var(--primary);
+  box-shadow:    0 0 0 4px var(--primary-light);
+  background:    var(--surface-active);
+}
+
+.otp-input.filled {
+  border-color:  var(--success);
+  background:    rgba(0,230,118,0.05);
+}
+
+/* ── Forgot/Reset Password ──────────────────────────────────── */
+.auth-divider {
+  display:     flex;
+  align-items: center;
+  gap:         12px;
+  margin:      20px 0;
+  color:       var(--text-muted);
+  font-size:   0.82rem;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+  content:    '';
+  flex:       1;
+  height:     1px;
+  background: var(--border);
+}
+
+/* ── Responsive tweaks ──────────────────────────────────────── */
+@media (max-width: 768px) {
+  .kpi-card   { padding: 16px; }
+  .kpi-value  { font-size: 1.4rem; }
+  .kpi-icon   { width: 44px; height: 44px; font-size: 1.1rem; }
+  .filter-bar { padding: 12px; }
+  .filter-bar .form-control { max-width: 140px; }
+  .otp-input  { width: 44px; height: 52px; font-size: 1.4rem; }
+}
