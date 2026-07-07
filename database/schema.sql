@@ -9,10 +9,7 @@ SET sql_mode = 'STRICT_TRANS_TABLES,NO_ZERO_DATE,NO_ZERO_IN_DATE,ERROR_FOR_DIVIS
 
 -- Create and select database
 CREATE DATABASE IF NOT EXISTS shuvo_smm_panel
-  CHARACTER SET utf8mb4
-  COLLATE utf8mb4_unicode_ci;
-
-USE railway;
+  
 
 -- =============================================================
 -- USERS & AUTH
