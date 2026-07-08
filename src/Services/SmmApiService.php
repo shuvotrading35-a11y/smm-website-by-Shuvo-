@@ -171,21 +171,65 @@ final class SmmApiService
             $error = $e->getMessage();
             throw $e;
         } finally {
-            // Log every call (strip API key from logged params)
-            $safeParams = $params; // Key not included in $params
-            $duration   = (int) ((microtime(true) - $start) * 1000);
+            // Log every call (strip API key from logged params).
+            // This must NEVER throw and break the caller's flow — a
+            // logging failure should never take down a sync operation.
+            try {
+                $safeParams = $params;
+                $duration   = (int) ((microtime(true) - $start) * 1000);
 
-            $this->db->insert('smmPanel_api_logs', [
-                'user_id'     => null,
-                'action'      => $params['action'] ?? 'unknown',
-                'endpoint'    => $this->apiUrl,
-                'request'     => json_encode($safeParams),
-                'response'    => $rawResponse ? (strlen($rawResponse) > 5000 ? substr($rawResponse, 0, 5000) . '...' : $rawResponse) : null,
-                'status_code' => $httpCode,
-                'duration_ms' => $duration,
-                'error'       => $error,
+                $this->db->insert('smmPanel_api_logs', [
+                    'user_id'     => null,
+                    'action'      => $params['action'] ?? 'unknown',
+                    'endpoint'    => $this->apiUrl,
+                    'request'     => json_encode($safeParams),
+                    'response'    => $this->safeResponseForLog($rawResponse),
+                    'status_code' => $httpCode,
+                    'duration_ms' => $duration,
+                    'error'       => $error,
+                ]);
+            } catch (\Throwable $logError) {
+                error_log('[SmmApiService] Failed to write api log: ' . $logError->getMessage());
+            }
+        }
+    }
+
+    /**
+     * Build a value for the (JSON-typed) api_logs.response column that
+     * is guaranteed to be valid JSON, regardless of how large or malformed
+     * the raw provider response was. Naive substr() truncation of a JSON
+     * string can cut it mid-token and produce invalid JSON, which then
+     * fails to insert into a JSON column — silently breaking whatever
+     * sync operation triggered the log write.
+     */
+    private function safeResponseForLog(?string $rawResponse): ?string
+    {
+        if (!$rawResponse) {
+            return null;
+        }
+
+        $decoded = json_decode($rawResponse, true);
+
+        if (json_last_error() === JSON_ERROR_NONE) {
+            $reencoded = json_encode($decoded);
+
+            if ($reencoded !== false && strlen($reencoded) <= 5000) {
+                return $reencoded;
+            }
+
+            // Too large to store in full — store a safe, valid-JSON preview.
+            return json_encode([
+                'truncated' => true,
+                'preview'   => mb_substr($rawResponse, 0, 2000),
             ]);
         }
+
+        // Not valid JSON at all — wrap the raw text in a JSON object
+        // instead of storing it raw, so the column always gets valid JSON.
+        return json_encode([
+            'raw_non_json' => true,
+            'preview'      => mb_substr($rawResponse, 0, 2000),
+        ]);
     }
 
     // ── Service Cache ─────────────────────────────────────────

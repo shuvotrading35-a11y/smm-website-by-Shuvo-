@@ -12,7 +12,7 @@ use SMMPanel\Controllers\AdminController;
 use SMMPanel\Controllers\ApiController;
 use SMMPanel\Controllers\PublicController;
 use SMMPanel\Controllers\SupportController;
-
+use SMMPanel\Controllers\CronController;
 /**
  * App — Application bootstrap and route definitions.
  */
@@ -60,6 +60,7 @@ final class App
         $r->get('/terms',    [PublicController::class, 'terms']);
         $r->get('/privacy',  [PublicController::class, 'privacy']);
         $r->get('/ref/:code', [PublicController::class, 'referral']);
+							  $r->get('/cron/tick', [CronController::class, 'tick']);
 
         // ── Auth routes ───────────────────────────────────────
         $r->group(['prefix' => ''], function (Router $r) {

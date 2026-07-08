@@ -19,6 +19,7 @@ final class AuthController extends BaseController
 
     public function __construct()
     {
+					 parent::__construct();
         $this->db     = Database::getInstance();
         $this->mailer = new EmailService();
     }

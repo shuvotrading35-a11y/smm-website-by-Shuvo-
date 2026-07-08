@@ -3,71 +3,56 @@ declare(strict_types=1);
 namespace SMMPanel\Services;
 
 use SMMPanel\Core\Config;
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
 
 final class EmailService
 {
-    private function mailer(): PHPMailer
+    private const RESEND_API_URL = 'https://api.resend.com/emails';
+
+    private function send(string $to, string $name, string $subject, string $html): void
     {
-        $mail = new PHPMailer(true);
-        $mail->isSMTP();
-        $mail->Host       = Config::required('SMTP_HOST');
-        $mail->SMTPAuth   = true;
-        $mail->Username   = Config::required('SMTP_USER');
-        $mail->Password   = Config::required('SMTP_PASS');
-        $mail->SMTPSecure = Config::get('SMTP_ENCRYPTION', 'tls') === 'ssl'
-            ? PHPMailer::ENCRYPTION_SMTPS
-            : PHPMailer::ENCRYPTION_STARTTLS;
-        $mail->Port       = (int) Config::get('SMTP_PORT', 587);
-        $mail->CharSet    = 'UTF-8';
-        $mail->setFrom(
-            Config::get('SMTP_USER', 'noreply@shuvosmm.com'),
-            Config::get('MAIL_FROM_NAME', 'Shuvo SMM Panel')
-        );
-        return $mail;
+        try {
+            $payload = json_encode([
+                'from'    => Config::get('MAIL_FROM_NAME', 'Shuvo SMM Panel')
+                             . ' <' . Config::get('MAIL_FROM_EMAIL', 'onboarding@resend.dev') . '>',
+                'to'      => [$to],
+                'subject' => $subject,
+                'html'    => $html,
+            ], JSON_THROW_ON_ERROR);
+
+            $ch = curl_init(self::RESEND_API_URL);
+            curl_setopt_array($ch, [
+                CURLOPT_POST           => true,
+                CURLOPT_POSTFIELDS     => $payload,
+                CURLOPT_HTTPHEADER     => [
+                    'Authorization: Bearer ' . Config::required('RESEND_API_KEY'),
+                    'Content-Type: application/json',
+                ],
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_TIMEOUT        => 10,
+                CURLOPT_CONNECTTIMEOUT => 5,
+            ]);
+
+            $response = curl_exec($ch);
+            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            $curlErr  = curl_error($ch);
+            curl_close($ch);
+
+            if ($response === false || $httpCode >= 300) {
+                error_log("[Email] Resend failed: HTTP {$httpCode} - {$curlErr} - {$response}");
+            }
+        } catch (\Throwable $e) {
+            error_log('[Email] Send failed: ' . $e->getMessage());
+        }
     }
 
     public function sendOtp(string $to, string $name, string $otp): void
     {
-        try {
-            $mail = $this->mailer();
-            $mail->addAddress($to, $name);
-            $mail->Subject = 'Your OTP Code — Shuvo SMM Panel';
-            $mail->isHTML(true);
-            $mail->Body = $this->otpTemplate($name, $otp);
-            $mail->send();
-        } catch (\Throwable $e) {
-            error_log('[Email] OTP failed: ' . $e->getMessage());
-        }
+        $this->send($to, $name, 'Your OTP Code — Shuvo SMM Panel', $this->otpTemplate($name, $otp));
     }
 
     public function sendPasswordReset(string $to, string $name, string $url): void
     {
-        try {
-            $mail = $this->mailer();
-            $mail->addAddress($to, $name);
-            $mail->Subject = 'Reset Your Password — Shuvo SMM Panel';
-            $mail->isHTML(true);
-            $mail->Body = $this->resetTemplate($name, $url);
-            $mail->send();
-        } catch (\Throwable $e) {
-            error_log('[Email] Reset failed: ' . $e->getMessage());
-        }
-    }
-
-    public function send(string $to, string $name, string $subject, string $html): void
-    {
-        try {
-            $mail = $this->mailer();
-            $mail->addAddress($to, $name);
-            $mail->Subject = $subject;
-            $mail->isHTML(true);
-            $mail->Body = $html;
-            $mail->send();
-        } catch (\Throwable $e) {
-            error_log('[Email] Send failed: ' . $e->getMessage());
-        }
+        $this->send($to, $name, 'Reset Your Password — Shuvo SMM Panel', $this->resetTemplate($name, $url));
     }
 
     private function otpTemplate(string $name, string $otp): string

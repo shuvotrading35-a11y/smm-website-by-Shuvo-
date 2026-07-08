@@ -7,12 +7,6 @@ SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 SET sql_mode = 'STRICT_TRANS_TABLES,NO_ZERO_DATE,NO_ZERO_IN_DATE,ERROR_FOR_DIVISION_BY_ZERO';
 
--- Create and select database
-CREATE DATABASE IF NOT EXISTS shuvo_smm_panel
-  CHARACTER SET utf8mb4
-  COLLATE utf8mb4_unicode_ci;
-
-USE shuvo_smm_panel;
 
 -- =============================================================
 -- USERS & AUTH
