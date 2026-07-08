@@ -60,6 +60,7 @@ final class App
         $r->get('/terms',    [PublicController::class, 'terms']);
         $r->get('/privacy',  [PublicController::class, 'privacy']);
         $r->get('/ref/:code', [PublicController::class, 'referral']);
+							  $r->get('/cron/tick', [CronController::class, 'tick']);
 
         // ── Auth routes ───────────────────────────────────────
         $r->group(['prefix' => ''], function (Router $r) {
