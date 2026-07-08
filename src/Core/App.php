@@ -12,7 +12,7 @@ use SMMPanel\Controllers\AdminController;
 use SMMPanel\Controllers\ApiController;
 use SMMPanel\Controllers\PublicController;
 use SMMPanel\Controllers\SupportController;
-
+use SMMPanel\Controllers\CronController;
 /**
  * App — Application bootstrap and route definitions.
  */
