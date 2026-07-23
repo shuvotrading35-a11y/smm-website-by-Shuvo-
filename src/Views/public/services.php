@@ -1,4 +1,42 @@
-<?php /* Public Services Page */ ?>
+<?php
+/* Public Services Page */
+
+// Group categories by platform, parsed from the "Platform - Description" naming convention.
+$platformIcons = [
+    'facebook'   => 'fab fa-facebook',
+    'instagram'  => 'fab fa-instagram',
+    'tiktok'     => 'fab fa-tiktok',
+    'youtube'    => 'fab fa-youtube',
+    'twitter'    => 'fab fa-x-twitter',
+    'x'          => 'fab fa-x-twitter',
+    'telegram'   => 'fab fa-telegram',
+    'whatsapp'   => 'fab fa-whatsapp',
+    'linkedin'   => 'fab fa-linkedin',
+    'spotify'    => 'fab fa-spotify',
+    'discord'    => 'fab fa-discord',
+    'soundcloud' => 'fab fa-soundcloud',
+    'pinterest'  => 'fab fa-pinterest',
+    'snapchat'   => 'fab fa-snapchat',
+    'twitch'     => 'fab fa-twitch',
+    'reddit'     => 'fab fa-reddit',
+    'threads'    => 'fab fa-threads',
+];
+
+$platformGroups = [];
+foreach ($categories as $cat) {
+    $platform = trim(explode(' - ', $cat['name'], 2)[0]);
+    $platformGroups[$platform][] = $cat;
+}
+
+$activePlatform = array_key_first($platformGroups);
+foreach ($platformGroups as $platform => $cats) {
+    foreach ($cats as $c) {
+        if ($c['id'] === $activeCatId) { $activePlatform = $platform; break 2; }
+    }
+}
+
+$platformSlug = fn($p) => strtolower(trim(preg_replace('/[^a-z0-9]+/i', '-', $p), '-'));
+?>
 
 <div style="padding-top:70px;">
   <!-- Hero -->
@@ -10,9 +48,29 @@
       Browse our full catalog of social media growth services. Best prices guaranteed.
     </p>
 
-    <!-- Category Tabs -->
-    <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;max-width:900px;margin:0 auto;" id="categoryTabs">
-      <?php foreach ($categories as $cat): ?>
+    <!-- Platform Tabs -->
+    <div style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center;max-width:900px;margin:0 auto 18px;" id="platformTabs">
+      <?php foreach ($platformGroups as $platform => $cats):
+        $slug = $platformSlug($platform);
+        $icon = $platformIcons[strtolower($platform)] ?? 'fas fa-share-nodes';
+        $isActivePlatform = $platform === $activePlatform;
+      ?>
+      <button class="btn <?= $isActivePlatform ? 'btn-primary' : 'btn-outline' ?> platform-tab"
+              data-platform="<?= htmlspecialchars($slug) ?>"
+              onclick="switchPlatform('<?= htmlspecialchars($slug) ?>', this)">
+        <i class="<?= $icon ?>"></i> <?= htmlspecialchars($platform) ?>
+        <span style="font-size:0.72rem;opacity:0.7;">(<?= count($cats) ?>)</span>
+      </button>
+      <?php endforeach; ?>
+    </div>
+
+    <!-- Category Tabs (grouped per platform — only the active platform's group is shown) -->
+    <?php foreach ($platformGroups as $platform => $cats):
+      $slug = $platformSlug($platform);
+    ?>
+    <div class="platform-group" data-platform="<?= htmlspecialchars($slug) ?>"
+         style="display:<?= $platform === $activePlatform ? 'flex' : 'none' ?>;flex-wrap:wrap;gap:8px;justify-content:center;max-width:900px;margin:0 auto;">
+      <?php foreach ($cats as $cat): ?>
       <button class="btn <?= $cat['id'] === $activeCatId ? 'btn-primary' : 'btn-ghost' ?> btn-sm category-tab"
               data-id="<?= $cat['id'] ?>"
               onclick="switchCategory(<?= $cat['id'] ?>, this)">
@@ -23,6 +81,7 @@
       </button>
       <?php endforeach; ?>
     </div>
+    <?php endforeach; ?>
   </div>
 
   <div class="container-xl" style="padding-bottom:80px;">
@@ -113,6 +172,20 @@
 
 <script>
 let currentCategoryId = <?= (int)$activeCatId ?>;
+
+function switchPlatform(slug, btn) {
+  document.querySelectorAll('.platform-tab').forEach(b => {
+    b.className = b.className.replace('btn-primary', 'btn-outline');
+  });
+  btn.className = btn.className.replace('btn-outline', 'btn-primary');
+
+  document.querySelectorAll('.platform-group').forEach(g => {
+    g.style.display = g.dataset.platform === slug ? 'flex' : 'none';
+  });
+
+  const firstCatBtn = document.querySelector(`.platform-group[data-platform="${slug}"] .category-tab`);
+  if (firstCatBtn) switchCategory(parseInt(firstCatBtn.dataset.id, 10), firstCatBtn);
+}
 
 async function switchCategory(catId, btn) {
   document.querySelectorAll('.category-tab').forEach(b => {
