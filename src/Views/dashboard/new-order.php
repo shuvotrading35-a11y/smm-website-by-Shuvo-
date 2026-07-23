@@ -1,4 +1,35 @@
-<?php /* New Order View */ ?>
+<?php
+/* New Order View */
+
+// Group categories by platform (parsed from "Platform - Description" naming) for a visual icon-grid picker.
+$platformMeta = [
+    'facebook'   => ['icon' => 'fab fa-facebook',   'color' => '#1877F2'],
+    'instagram'  => ['icon' => 'fab fa-instagram',  'color' => '#E4405F'],
+    'tiktok'     => ['icon' => 'fab fa-tiktok',     'color' => '#25F4EE'],
+    'youtube'    => ['icon' => 'fab fa-youtube',    'color' => '#FF0000'],
+    'twitter'    => ['icon' => 'fab fa-x-twitter',  'color' => '#E7E9EA'],
+    'x'          => ['icon' => 'fab fa-x-twitter',  'color' => '#E7E9EA'],
+    'telegram'   => ['icon' => 'fab fa-telegram',   'color' => '#26A5E4'],
+    'whatsapp'   => ['icon' => 'fab fa-whatsapp',   'color' => '#25D366'],
+    'linkedin'   => ['icon' => 'fab fa-linkedin',   'color' => '#0A66C2'],
+    'spotify'    => ['icon' => 'fab fa-spotify',    'color' => '#1DB954'],
+    'discord'    => ['icon' => 'fab fa-discord',    'color' => '#5865F2'],
+    'soundcloud' => ['icon' => 'fab fa-soundcloud', 'color' => '#FF7700'],
+    'pinterest'  => ['icon' => 'fab fa-pinterest',  'color' => '#E60023'],
+    'snapchat'   => ['icon' => 'fab fa-snapchat',   'color' => '#FFFC00'],
+    'twitch'     => ['icon' => 'fab fa-twitch',     'color' => '#9146FF'],
+    'reddit'     => ['icon' => 'fab fa-reddit',     'color' => '#FF4500'],
+    'threads'    => ['icon' => 'fab fa-threads',    'color' => '#E7E9EA'],
+];
+
+$platformGroups = [];
+foreach ($categories as $cat) {
+    $platform = trim(explode(' - ', $cat['name'], 2)[0]);
+    $platformGroups[$platform][] = $cat;
+}
+$platformSlug = fn($p) => strtolower(trim(preg_replace('/[^a-z0-9]+/i', '-', $p), '-'));
+$firstPlatform = array_key_first($platformGroups);
+?>
 
 <style>
 .order-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
@@ -45,21 +76,43 @@
       <div class="order-card mb-4">
         <div class="order-card-header">
           <i class="fas fa-layer-group" style="color:var(--primary);"></i>
-          Step 1 — Choose Category
+          Step 1 — Choose Platform &amp; Category
         </div>
         <div class="order-card-body">
-          <div style="display:flex;flex-wrap:wrap;gap:8px;" id="categoryBtns">
-            <?php foreach ($categories as $cat): ?>
-            <button type="button"
-              class="btn btn-ghost btn-sm category-btn"
-              data-id="<?= $cat['id'] ?>"
-              data-name="<?= htmlspecialchars($cat['name']) ?>"
-              onclick="selectCategory(<?= $cat['id'] ?>, '<?= htmlspecialchars($cat['name'], ENT_QUOTES) ?>')">
-              <i class="<?= htmlspecialchars($cat['icon'] ?? 'fas fa-globe') ?>"
-                 style="color:<?= htmlspecialchars($cat['color'] ?? 'var(--primary)') ?>;"></i>
-              <?= htmlspecialchars($cat['name']) ?>
-              <span style="font-size:0.75rem;color:var(--text-muted);">(<?= $cat['service_count'] ?>)</span>
+
+          <!-- Platform Icon Grid -->
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px;" id="platformGrid">
+            <?php foreach ($platformGroups as $platform => $cats):
+              $slug = $platformSlug($platform);
+              $meta = $platformMeta[strtolower($platform)] ?? ['icon' => 'fas fa-share-nodes', 'color' => 'var(--primary)'];
+            ?>
+            <button type="button" class="platform-tile <?= $platform === $firstPlatform ? 'active' : '' ?>" data-platform="<?= htmlspecialchars($slug) ?>" data-color="<?= htmlspecialchars($meta['color']) ?>"
+                    onclick="switchOrderPlatform('<?= htmlspecialchars($slug) ?>', this)"
+                    style="background:color-mix(in srgb, <?= $meta['color'] ?> 14%, var(--surface));border:1px solid <?= $platform === $firstPlatform ? $meta['color'] : 'var(--border)' ?>;border-radius:var(--radius);padding:14px 8px;text-align:center;cursor:pointer;transition:all var(--transition);">
+              <i class="<?= $meta['icon'] ?>" style="font-size:1.4rem;color:<?= $meta['color'] ?>;"></i>
+              <div style="font-size:0.68rem;color:var(--text-secondary);margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"><?= htmlspecialchars($platform) ?></div>
             </button>
+            <?php endforeach; ?>
+          </div>
+
+          <!-- Categories for the selected platform -->
+          <div style="display:flex;flex-wrap:wrap;gap:8px;" id="categoryBtns">
+            <?php foreach ($platformGroups as $platform => $cats):
+              $slug = $platformSlug($platform);
+            ?>
+              <?php foreach ($cats as $cat): ?>
+              <button type="button"
+                class="btn btn-ghost btn-sm category-btn platform-group-<?= htmlspecialchars($slug) ?>"
+                style="<?= $platform === $firstPlatform ? '' : 'display:none;' ?>"
+                data-id="<?= $cat['id'] ?>"
+                data-name="<?= htmlspecialchars($cat['name']) ?>"
+                onclick="selectCategory(<?= $cat['id'] ?>, '<?= htmlspecialchars($cat['name'], ENT_QUOTES) ?>')">
+                <i class="<?= htmlspecialchars($cat['icon'] ?? 'fas fa-globe') ?>"
+                   style="color:<?= htmlspecialchars($cat['color'] ?? 'var(--primary)') ?>;"></i>
+                <?= htmlspecialchars($cat['name']) ?>
+                <span style="font-size:0.75rem;color:var(--text-muted);">(<?= $cat['service_count'] ?>)</span>
+              </button>
+              <?php endforeach; ?>
             <?php endforeach; ?>
           </div>
         </div>
@@ -234,6 +287,18 @@ const userBalance = <?= (float)$user['balance'] ?>;
 let selectedService = null;
 let allServices = [];
 let couponDiscount = 0;
+
+function switchOrderPlatform(slug, btn) {
+  document.querySelectorAll('.platform-tile').forEach(t => {
+    t.classList.remove('active');
+    t.style.borderColor = 'var(--border)';
+  });
+  btn.classList.add('active');
+  btn.style.borderColor = btn.dataset.color;
+
+  document.querySelectorAll('.category-btn').forEach(c => { c.style.display = 'none'; });
+  document.querySelectorAll('.platform-group-' + slug).forEach(c => { c.style.display = ''; });
+}
 
 function selectCategory(id, name) {
   document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('btn-primary'));
