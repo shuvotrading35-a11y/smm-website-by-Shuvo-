@@ -26,7 +26,7 @@
                 <div style="font-size:0.75rem;color:var(--text-muted);"><?= htmlspecialchars($p['excerpt'] ?? '') ?></div>
               </td>
               <td style="font-size:0.85rem;"><?= htmlspecialchars($p['author']) ?></td>
-              <td><span class="badge badge-<?= $p['status'] === 'published' ? 'active' : 'pending' ?>"><?= ucfirst($p['status']) ?></span></td>
+              <td><span class="badge badge-<?= htmlspecialchars($p['status']) ?>"><?= ucfirst($p['status']) ?></span></td>
               <td style="font-size:0.8rem;color:var(--text-muted);"><?= $p['published_at'] ? date('M d, Y', strtotime($p['published_at'])) : '—' ?></td>
               <td>
                 <div style="display:flex;gap:4px;">

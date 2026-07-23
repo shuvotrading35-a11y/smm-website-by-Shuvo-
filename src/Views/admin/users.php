@@ -68,7 +68,7 @@
               <td style="font-weight:700;color:var(--success);">$<?= number_format((float) $u['balance'], 2) ?></td>
               <td><?= (int) $u['total_orders'] ?></td>
               <td>$<?= number_format((float) $u['total_spent'], 2) ?></td>
-              <td><span class="badge" style="background:var(--surface);border:1px solid var(--border);"><?= ucfirst($u['role']) ?></span></td>
+              <td><span class="badge badge-<?= htmlspecialchars($u['role']) ?>"><?= ucfirst($u['role']) ?></span></td>
               <td><span class="badge badge-<?= $u['status'] === 'active' ? 'active' : 'cancelled' ?>"><?= ucfirst($u['status']) ?></span></td>
               <td style="font-size:0.8rem;color:var(--text-muted);"><?= date('M d, Y', strtotime($u['created_at'])) ?></td>
               <td>
